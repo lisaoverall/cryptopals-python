@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from fixed_xor import *
+import string
 
 # Cryptopals Set 1 - Challenge 3
 # Single-byte XOR
@@ -9,6 +10,7 @@ from fixed_xor import *
 
 # the table on wikipedia "letter frequency" has no space
 # let's just give it a big weight and see what happens
+# let's also add in some things to cover punctuation
 LETTER_FREQS = {
     "a": .08497,   
     "b": .01492,
@@ -36,12 +38,21 @@ LETTER_FREQS = {
     "x": .00150,  
     "y": .01994,  
     "z": .00077,
-    " ": 1
+    " ": 1,
+    ".": .5,
+    ",": .5,
+    "?": .25,
+    "!": .25,
+    "-": .25,
+    ":": .05,
+    ";": .05
 }
 
 def score(pt):
-    pt = [chr(c).lower() for c in pt]
-    return sum([LETTER_FREQS.get(c, 0) for c in pt])
+    if all([c in set(string.printable.encode('utf-8')) for c in pt]):
+        pt = [chr(c).lower() for c in pt]
+        return sum([LETTER_FREQS.get(c, -1) for c in pt])
+    return 0
 
 
 def encrypt(pt, key):

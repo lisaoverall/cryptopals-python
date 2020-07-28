@@ -24,7 +24,8 @@ def insert_user_data(s):
     s = re.sub(b';', b'\\;', s)
     s = re.sub(b'=', b'\\=', s)
     iv = bytes(16)
-    return aes_cbc.encrypt(PREFIX + s + SUFFIX, KEY, iv)
+    pt = pkcs7.pad_for_aes(PREFIX + s + SUFFIX)
+    return aes_cbc.encrypt(pt, KEY, iv)
 
 def decrypt_and_check(s):
     iv = bytes(16)
@@ -35,9 +36,9 @@ def decrypt_and_check(s):
 if __name__ == "__main__":
     s = b'asdf'
     t = b';admin=true'
-    assert aes_cbc.decrypt(insert_user_data(s), KEY, bytes(16)) == (PREFIX + s + SUFFIX)
-    assert decrypt_and_check(aes_cbc.encrypt(PREFIX+ s + t + SUFFIX, KEY, bytes(16)))
-    assert not decrypt_and_check(aes_cbc.encrypt(t, KEY, bytes(16)))
+    assert pkcs7.unpad(aes_cbc.decrypt(insert_user_data(s), KEY, bytes(16))) == (PREFIX + s + SUFFIX)
+    assert decrypt_and_check(aes_cbc.encrypt(pkcs7.pad_for_aes(PREFIX+ s + t + SUFFIX), KEY, bytes(16)))
+    assert not decrypt_and_check(aes_cbc.encrypt(pkcs7.pad_for_aes(t), KEY, bytes(16)))
 
     # PREFIX len is 32 - modify 2nd block so that
     # error causes ";admin=true" to appear in user data

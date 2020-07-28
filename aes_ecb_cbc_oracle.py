@@ -30,9 +30,9 @@ def random_encrypt(pt):
     # choose to encrypt under ECB 1/2 the time, and under CBC the other half
     # (just use random IVs each time for CBC).
     enc_func = random.choice([aes_ecb.encrypt, aes_cbc.encrypt])
+    pt = pkcs7.pad_for_aes(pt)
     if enc_func == aes_ecb.encrypt:
         mode = 'ECB'
-        pt = pkcs7.pad_for_aes(pt)
         ct = aes_ecb.encrypt(pt, key)
     else:
         mode = 'CBC'
