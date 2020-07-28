@@ -8,7 +8,7 @@ from single_byte_xor import *
 
 
 if __name__ == '__main__':
-    f = open('4.txt') 
+    f = open('challenge-data/4.txt') 
     cts = [ct.strip() for ct in f.readlines()]
     cts_raw = [bytes.fromhex(ct) for ct in cts]
     cts_best_score = [bruteforce(ct)[0] for ct in cts_raw]

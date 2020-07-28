@@ -9,7 +9,7 @@
 from aes_ecb import *
 
 if __name__ == '__main__':
-    f = open("8.txt")
+    f = open("challenge-data/8.txt")
     cts_hex = [x.strip() for x in f.readlines()]
     f.close()
 

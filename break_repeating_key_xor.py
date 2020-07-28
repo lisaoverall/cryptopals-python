@@ -8,17 +8,39 @@ import itertools
 import single_byte_xor
 import repeating_key_xor
 
-def hamming_dist(s1, s2):
-    assert(len(s1) == len(s2))
+def hamming_dist_naive(s1, s2):
+    assert len(s1) == len(s2)
     xor = int.from_bytes(s1, "big") ^ int.from_bytes(s2, "big")
     bitstr = "{0:b}".format(xor)
     return bitstr.count('1')
 
-
+def hamming_dist(s1, s2):
+    assert len(s1) == len(s2)
+    count = 0
+    for i in range(len(b1)):
+        v = s1[i] ^ s1[i]
+        if v & 0x80:
+            count += 1
+        if v & 0x40:
+            count += 1
+        if v & 0x20:
+            count += 1
+        if v & 0x10:
+            count += 1
+        if v & 0x8:
+            count += 1
+        if v & 0x4:
+            count += 1
+        if v & 0x2:
+            count += 1
+        if v & 0x1:
+            count += 1
+        return count
+            
 if __name__ == '__main__':
     assert hamming_dist(b'this is a test', b'wokka wokka!!!') == 37
     
-    f = open('6.txt')
+    f = open('challenge-data/6.txt')
     ct_b64 = f.read()
     f.close()
 
