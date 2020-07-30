@@ -44,7 +44,24 @@ class CTR:
 
         return fixed_xor(k, bs)
 
+    def edit(self, ct, offset, newtext):  # for Challenge 25
+        assert type(ct) == bytes
+        assert type(newtext) == bytes
+        assert len(ct) >= offset + len(newtext)
 
+        # don't want to modify the internal state of the class
+        keystream = bytes()
+        ctr = offset // 16  # back up to offset ctr's position 
+        while ctr * 16 < offset + len(newtext):
+            keystream += self.__encryptor(self.__nonce + ctr.to_bytes(8, "little"))[:16]
+            ctr += 1
+
+        # slice out the bits of key you need
+        k = keystream[offset % 16:(offset % 16) + len(newtext)]
+        
+        return ct[:offset] + fixed_xor(k, newtext) + ct[offset+len(newtext):]
+
+    
 def AESCTR(key):
     return CTR(lambda x: aes_ecb.encrypt(x, key))
 
@@ -67,3 +84,14 @@ if __name__ == '__main__':
     ct = ctr2.crypt(pt)
     ctr3 = AESCTR(key)
     assert ctr3.crypt(ct) == pt
+
+    ctr4 = AESCTR(key)
+    pt = b'foobar'
+    ct = ctr4.crypt(pt)
+    offset = 0
+    newtext = b'z'
+    new_ct = ctr4.edit(ct, offset, newtext)
+    
+    ctr5 = AESCTR(key)
+    new_pt = ctr5.crypt(new_ct)
+    assert new_pt == b'zoobar'
