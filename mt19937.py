@@ -59,8 +59,10 @@ class MT19937:
         self.y = self.y ^ (self.y >> self.l)
 
         self.index += 1
-        return ((2**self.w)-1) & self.y
+        # the shifting gets the lowest 32 bits
+        return self.y  # ((2**self.w)-1) & self.y
 
+    
 if __name__ == "__main__":
     rng = MT19937()
     rng.seed(37)
