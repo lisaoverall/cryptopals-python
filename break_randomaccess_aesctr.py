@@ -24,3 +24,7 @@ if __name__ == "__main__":
     # encrypting null bytes returns keystream
     k = ctr.edit(ct, 0, bytes(len(ct)))
     assert fixed_xor(ct, k) == pt
+
+    # alternately, encrypting ct is equivalent to decrypting
+    k = ctr.edit(ct, 0, ct)
+    assert k == pt
