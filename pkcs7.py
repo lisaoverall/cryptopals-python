@@ -34,6 +34,7 @@ def validate_padding(s):
         raise ValueError("Invalid padding")
 
 def pad_for_aes(pt):
+    # (num_complete_blocks + partial_block(0/1)) * block_size
     ct_len = ((len(pt) // 16) + (len(pt) % 16 != 0)) * 16
     if len(pt) == ct_len:
         pt += pad(b'', 16)

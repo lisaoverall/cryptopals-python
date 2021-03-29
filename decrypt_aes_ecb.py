@@ -29,6 +29,7 @@ if __name__ == "__main__":
     
     # discover block size
     len_empty_ct = len(encryption_oracle(b''))
+    # print(len_empty_ct)
     blocksize = None
     for i in range(1, 64):
         ct = encryption_oracle(b'a'*i)
@@ -51,11 +52,13 @@ if __name__ == "__main__":
             guess = junk + recovered + bytes([i])
             if encryption_oracle(guess)[:len_empty_ct] == junk_ct[:len_empty_ct]:
                 recovered += bytes([i])
+                # print(recovered)
                 break
             # no more bytes to recover - padding
             elif i == 255: 
                 npad = len_empty_ct - len(recovered) + 1
                 recovered = recovered[:-1] + bytes([npad]*npad)
+                # print(recovered)
                 break
 
     recovered = pkcs7.unpad(recovered)

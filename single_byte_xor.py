@@ -55,16 +55,12 @@ def score(pt):
     return 0
 
 
-def encrypt(pt, key):
-    return fixed_xor(pt, bytes([key]*len(pt)))
-
-
-def decrypt(ct, key):
-    return fixed_xor(ct, bytes([key]*len(ct)))
+def crypt(t, key):
+    return fixed_xor(t, bytes([key]*len(t)))
 
 
 def bruteforce(ct, n=1):
-    putative_pts = [(i, decrypt(ct, i)) for i in range(256)]
+    putative_pts = [(i, crypt(ct, i)) for i in range(256)]
     scores = sorted([(k, p, score(p)) for k, p in putative_pts], 
                     key=lambda x: x[2], reverse=True)
     return scores[:n]
